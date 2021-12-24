@@ -7,12 +7,16 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
+import { IFilters } from 'src/types/filters';
+import { queryToFilters } from 'src/utils/filters';
 import { CreateMemberDto } from './dto/CreateMemberDto';
 import { GetMemberDto } from './dto/GetMemberDto';
+import { GetMembersDto } from './dto/GetMembersDto';
 import { MembersService } from './members.service';
 
-@Controller('members')
+@Controller('api/members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
@@ -30,8 +34,8 @@ export class MembersController {
   }
 
   @Get()
-  getAllMembers(): GetMemberDto[] {
-    return this.membersService.getAllMembers() || [];
+  getAllMembers(@Query() query: IFilters): GetMembersDto {
+    return this.membersService.getAllMembers(query);
   }
 
   @Post()

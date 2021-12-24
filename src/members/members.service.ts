@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { GetMemberDto } from './dto/GetMemberDto';
 import * as TEMP_MOCKED_MEMBERS from '../data/members.json';
 import { CreateMemberDto } from './dto/CreateMemberDto';
+import { GetMembersDto } from './dto/GetMembersDto';
+import { IFilters } from 'src/types/filters';
 
 const MOCKED_MEMBERS = TEMP_MOCKED_MEMBERS.map(
   (temp: any, index: number): GetMemberDto => ({
@@ -16,8 +18,14 @@ export class MembersService {
     return MOCKED_MEMBERS.find((member: GetMemberDto) => member.id === id);
   };
 
-  getAllMembers = (): GetMemberDto[] => {
-    return MOCKED_MEMBERS;
+  getAllMembers = (filters: IFilters): GetMembersDto => {
+    const result = {
+      data: MOCKED_MEMBERS.slice(filters.skip, filters.skip + filters.limit),
+      filters: {
+        count: MOCKED_MEMBERS.length,
+      },
+    };
+    return result;
   };
 
   createMember = (createMemberDto: CreateMemberDto): GetMemberDto => {
@@ -27,7 +35,6 @@ export class MembersService {
     };
 
     MOCKED_MEMBERS.push(newMember);
-
     return newMember;
   };
 }
